@@ -1,0 +1,6 @@
+sourcetype=access_* status=200 ```Get all successful website access events.```
+| stats count AS views count(eval(action="addtocart")) AS addtocart count(eval(action="purchase")) AS purchases by productName ```Create counts of site views, add-to-cart actions, and purchase actions. Break them out by product name. ```
+| eval cartToPurchases=(purchases/views)*100 ```Find the ratio of site views to purchases.```
+|eval cartToPurchases=(purchases/addtocart)*100 ```Find the ratio of add-to-cart actions to purchases.```
+| table productName views addtocart purchases viewsToPurchases cartToPurchases ```Put all this data into a table.```
+| rename productName AS "Product Name", views AS "Views", addtocart AS "Add To Cart", purchases AS "Purchases" ``` Rename some table columns.```
