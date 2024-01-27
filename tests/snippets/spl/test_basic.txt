@@ -1,17 +1,7 @@
 ``` Basic SPL Commands ```
-timeformat="%F %T%z" 
-earliest="2023-11-01 00:00:00+0900" 
-latest="2023-11-08 00:00:00+0900"
-index="ait_prd_idx_domain"
-sourcetype="XmlWinEventLog"
-signature="User name is correct but the password is wrong"
-| table _time,user
-| eval time=strftime(_time,"%Y/%m/%d")
-| eval pre1time=strftime(_time-24*60*60,"%Y/%m/%d")
-| eval pre2time=strftime(_time-48*60*60,"%Y/%m/%d")
-| stats count by user,time,pre1time,pre2time
-| sort +user,+time
-| streamstats current=f last(time) as prev_time1 by user
-| streamstats current=f last(prev_time1) as prev_time2 by user
-| where prev_time1=pre1time AND prev_time2=pre2time
-| table user,time,pre1time,pre2time
+index="sample_index"
+sourcetype="sample_sourcetype"
+| table _time, user
+| eval current=strftime(_time,"%Y/%m/%d")
+| stats count by user, current
+| sort +user, +time

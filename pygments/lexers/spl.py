@@ -1,5 +1,5 @@
 from pygments.lexer import RegexLexer
-from pygments.token import Comment, Keyword, Name, String, Number, Operator, Text, Literal
+from pygments.token import Comment, Keyword, Name, String, Number, Operator, Text, Literal, Punctuation
 
 __all__ = ['SplunkSplLexer']
 
@@ -15,9 +15,12 @@ class SplunkSplLexer(RegexLexer):
             # Splunk Eval functions. See https://docs.splunk.com/Documentation/Splunk/9.1.2/SearchReference/CommonEvalFunctions#Alphabetical_list_of_functions
             (r'\b(abs|acos|acosh|asin|asinh|atan|atan2|atanh|case|cidrmatch|ceiling|coalesce|commands|cos|cosh|exact|exp|floor|hypot|if|in|isbool|isint|isnotnull|isnull|isnum|isstr|len|like|ln|log|lower|ltrim|match|max|md5|min|mvappend|mvcount|mvdedup|mvfilter|mvfind|mvindex|mvjoin|mvrange|mvsort|mvzip|now|null|nullif|pi|pow|printf|random|relative_time|replace|round|rtrim|searchmatch|sha1|sha256|sha512|sigfig|sin|sinh|spath|split|sqrt|strftime|strptime|substr|tan|tanh|time|tonumber|tostring|trim|typeof|upper|urldecode|validate)\b(?=\()', Name.Function),
             # Splunk Statistical and Charting Functions. See https://docs.splunk.com/Documentation/SplunkCloud/9.1.2308/SearchReference/CommonStatsFunctions
-            (r'\b(avg|count|distinct_count|earliest|earliest_time|estdc|estdc_error|exactperc|first|last|latest|latest_time|list|max|mean|median|min|mode|perc|per_day|per_hour|per_minute|per_second|range|rate|rate_avg|rate_sum|stdev|stdevp|sum|sumsq|var|varp)\b(?=\()', Name.Function),
+            (r'\b(avg|count|distinct_count|earliest|earliest_time|estdc|estdc_error|exactperc|first|last|latest|latest_time|list|max|mean|median|min|mode|perc|per_day|per_hour|per_minute|per_second|range|rate|rate_avg|rate_sum|stdev|stdevp|sum|sumsq|var|varp)\b', Name.Function),
             # Splunk Internal commands. See https://docs.splunk.com/Documentation/SplunkCloud/9.1.2308/SearchReference/Aboutinternalcommands
             (r'\b(collapse|dump|findkeywords|makejson|mcatalog|noop|prjob|redistribute|runshelscript)\b', Keyword),
+            (r'index|sourcetype', Keyword.Reserved), # Reserved Keywords
+            (r'\(', Punctuation), # Open Parenthesis
+            (r'\)', Punctuation), # Close Parenthesis
             # Splunk Macro Names
             (r'`[\w]+(?=\(|`)', Name.Function),
             # Digits
@@ -34,11 +37,13 @@ class SplunkSplLexer(RegexLexer):
             # Splunk Variables
             (r'[\w\.]+(?=\[|\]|\{|\})?\s*(?==)', Name.Variable),
             # Comparison or assignment
-            (r'=', Operator),
+            (r'(\+\+|\-\-|\+=|\-=|\*=|/=|%=|==|!=|<=|>=|&&|\|\||<<|>>|&|\||\^|!|=|\+|\-|\*|/|%|<|>)', Operator),
             # Strings
             (r'"(\\\\|\\"|[^"])*"', String.Double),
             (r"'(\\\\|\\'|[^'])*'", String.Single),
             # Comments. See https://docs.splunk.com/Documentation/SplunkCloud/9.1.2308/Search/Comments
             (r'```[\s\S]*?```', Comment.Multiline),
+            (r'\s', Text.Whitespace),
+            (r'[\w\.]+', Name.Variable),
         ]
     }
